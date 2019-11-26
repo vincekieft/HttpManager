@@ -2,12 +2,6 @@ import 'dart:async';
 import 'package:http_manager/src/interfaces/i_exception_handler.dart';
 import 'package:http_manager/src/interfaces/i_http_adapter.dart';
 import 'dto/request.dart';
-import 'dto/response.dart';
-
-/// 1. Do requests
-/// 2. On Success (Done)
-/// 3. On failure, group failing requests with matching error
-/// 4. Handle fault as group
 
 class HttpManager{
 
@@ -24,24 +18,24 @@ class HttpManager{
   HttpManager(this._adapter, this._handlers);
 
   // Public methods
-  Future<Response> get(Uri uri, {Map<String, String> headers}) {
-    return request(uri, GET, null, headers);
+  Future<R> get<R>(Uri uri, {Map<String, String> headers}) {
+    return request<R>(uri, GET, null, headers);
   }
 
-  Future<Response> post(Uri uri, String body, {Map<String, String> headers}) {
-    return request(uri, POST, body, headers);
+  Future<R> post<R>(Uri uri, String body, {Map<String, String> headers}) {
+    return request<R>(uri, POST, body, headers);
   }
 
-  Future<Response> put(Uri uri, String body, {Map<String, String> headers}) {
-    return request(uri, PUT, body, headers);
+  Future<R> put<R>(Uri uri, String body, {Map<String, String> headers}) {
+    return request<R>(uri, PUT, body, headers);
   }
 
-  Future<Response> delete(Uri uri, {Map<String, String> headers}) {
-    return request(uri, DELETE, null, headers);
+  Future<R> delete<R>(Uri uri, {Map<String, String> headers}) {
+    return request<R>(uri, DELETE, null, headers);
   }
 
-  Future<Response> request(Uri uri, String method, String body, Map<String, String> headers){
-    Completer<Response> completer = Completer<Response>();
+  Future<R> request<R>(Uri uri, String method, String body, Map<String, String> headers){
+    Completer<R> completer = Completer<R>();
 
     send(Request(
         uri: uri,
@@ -56,7 +50,7 @@ class HttpManager{
 
   Future<void> send(Request request) async {
     try{
-      Response response = await _adapter.request(request);
+      dynamic response = await _adapter.request(request);
       _resolveRequest(request, response);
     } catch(e){ _handleException(e, request); }
   }
@@ -74,7 +68,7 @@ class HttpManager{
     throw e;
   }
 
-  void _resolveRequest(Request request, Response response){
+  void _resolveRequest(Request request, dynamic response){
     request.completer.complete(response);
   }
 
