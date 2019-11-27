@@ -4,6 +4,12 @@ import 'package:http/http.dart' as http;
 
 class HttpAdapter extends PersistentConnectionAdapter<http.Client, http.Response> {
 
+  final Function(http.Response response) filter;
+
+  HttpAdapter({
+    this.filter
+  });
+
   @override
   void dispose() {
     client.close();
@@ -24,7 +30,12 @@ class HttpAdapter extends PersistentConnectionAdapter<http.Client, http.Response
     if (request.body != null) httpRequest.body = request.body;
 
     // Send request
-    return await http.Response.fromStream(await client.send(httpRequest));
+    http.Response response = await http.Response.fromStream(await client.send(httpRequest));
+
+    // Optional filtering
+    if(filter != null) filter(response);
+
+    return response;
   }
 
 }

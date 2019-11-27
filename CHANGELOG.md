@@ -9,3 +9,7 @@
 ## 0.0.3
 
 - Added support for custom response type
+
+## 0.0.5
+
+- Added support for async should catch
