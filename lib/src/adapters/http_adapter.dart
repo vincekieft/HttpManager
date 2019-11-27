@@ -19,6 +19,7 @@ class HttpAdapter extends PersistentConnectionAdapter<http.Client, http.Response
         request.method,
         request.uri
     );
+
     if (request.headers != null) httpRequest.headers.addAll(request.headers);
     if (request.body != null) httpRequest.body = request.body;
 

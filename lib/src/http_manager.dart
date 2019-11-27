@@ -52,19 +52,17 @@ class HttpManager{
     try{
       dynamic response = await _adapter.request(request);
       _resolveRequest(request, response);
-    } catch(e){ _handleException(e, request); }
+    } catch(e){ await _handleException(e, request); }
   }
 
 
   // Private methods
 
-  void _handleException(e, Request request){
+  Future<void> _handleException(e, Request request) async {
     for(IExceptionHandler handler in _handlers){ // Search matching exception handler
-      if(handler.shouldHandle(e)) return handler.handle(request, e, this);
+      if(await handler.shouldHandle(e)) return handler.handle(request, e, this);
     }
 
-    // Failed to handle exception resolve and rethrow
-    _resolveRequest(request, null);
     throw e;
   }
 

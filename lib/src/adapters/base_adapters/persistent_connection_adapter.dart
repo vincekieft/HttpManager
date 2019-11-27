@@ -17,6 +17,7 @@ abstract class PersistentConnectionAdapter<T, R> implements IHttpAdapter{
       _requestCount++;
       return await internalRequest(request);
     } finally { _clean(); }
+
   }
 
   // Private methods
