@@ -13,3 +13,7 @@
 ## 0.0.5
 
 - Added support for async should catch
+
+## 0.0.6
+
+- Added http adapter filter option
