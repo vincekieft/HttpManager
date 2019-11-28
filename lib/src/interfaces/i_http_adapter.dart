@@ -1,5 +1,5 @@
-import 'package:http_manager/src/dto/request.dart';
+import 'package:http_manager/src/dto/i_request.dart';
 
 abstract class IHttpAdapter<T> {
-  Future<T> request(Request request);
+  Future<T> request(IRequest request);
 }
