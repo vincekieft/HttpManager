@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'i_request.dart';
 
-class Request {
+class Request implements IRequest {
 
   final Uri uri;
   final String method;

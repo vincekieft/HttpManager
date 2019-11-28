@@ -1,6 +1,6 @@
 import 'package:http_manager/src/adapters/base_adapters/persistent_connection_adapter.dart';
-import 'package:http_manager/src/dto/request.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_manager/src/dto/i_request.dart';
 
 class HttpAdapter extends PersistentConnectionAdapter<http.Client, http.Response> {
 
@@ -19,7 +19,7 @@ class HttpAdapter extends PersistentConnectionAdapter<http.Client, http.Response
   http.Client initialize() => http.Client();
 
   @override
-  Future<http.Response> internalRequest(Request request) async {
+  Future<http.Response> internalRequest(IRequest request) async {
     // Build request
     http.Request httpRequest = http.Request(
         request.method,

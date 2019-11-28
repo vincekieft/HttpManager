@@ -1,5 +1,5 @@
+import 'package:http_manager/src/dto/i_request.dart';
 import 'package:http_manager/src/interfaces/i_http_adapter.dart';
-import 'package:http_manager/src/dto/request.dart';
 
 abstract class PersistentConnectionAdapter<T, R> implements IHttpAdapter{
 
@@ -9,7 +9,7 @@ abstract class PersistentConnectionAdapter<T, R> implements IHttpAdapter{
 
   // Overrides
   @override
-  Future<R> request(Request request) async {
+  Future<R> request(IRequest request) async {
     _ensureClient();
 
     try {
@@ -39,7 +39,7 @@ abstract class PersistentConnectionAdapter<T, R> implements IHttpAdapter{
   // Abstract methods
   T initialize();
   void dispose();
-  Future<R> internalRequest(Request request);
+  Future<R> internalRequest(IRequest request);
 
   // Getters
   T get client => _client;

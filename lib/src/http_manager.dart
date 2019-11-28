@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:http_manager/src/factories/default_factory.dart';
 import 'package:http_manager/src/factories/i_request_factory.dart';
+import 'package:http_manager/src/interfaces/i_before_send.dart';
 import 'package:http_manager/src/interfaces/i_exception_handler.dart';
 import 'package:http_manager/src/interfaces/i_http_adapter.dart';
-import 'dto/request.dart';
+import 'dto/i_request.dart';
 
 
 class HttpManager{
@@ -42,13 +43,14 @@ class HttpManager{
 
   Future<R> request<R>(Uri uri, String method, String body, Map<String, String> headers) async {
     Completer<R> completer = Completer<R>();
-    Request request = await _factory.create(uri, method, body, headers, completer);
+    IRequest request = await _factory.create(uri, method, body, headers, completer);
     send(request);
     return completer.future;
   }
 
-  Future<void> send(Request request) async {
+  Future<void> send(IRequest request) async {
     try{
+      if(request is IBeforeSend) await (request as IBeforeSend).onBeforeSend(); // Before send
       dynamic response = await _adapter.request(request);
       _resolveRequest(request, response);
     } catch(e){ await _handleException(e, request); }
@@ -56,7 +58,7 @@ class HttpManager{
 
   // Private methods
 
-  Future<void> _handleException(e, Request request) async {
+  Future<void> _handleException(e, IRequest request) async {
     for(IExceptionHandler handler in _handlers){ // Search matching exception handler
       if(await handler.shouldHandle(e)) return handler.handle(request, e, this);
     }
@@ -64,7 +66,7 @@ class HttpManager{
     throw e;
   }
 
-  void _resolveRequest(Request request, dynamic response){
+  void _resolveRequest(IRequest request, dynamic response){
     request.completer.complete(response);
   }
 

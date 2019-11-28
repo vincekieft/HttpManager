@@ -21,3 +21,7 @@
 ## 0.0.7
 
 - Added custom request factory support
+
+## 0.0.9
+
+- Added before send event

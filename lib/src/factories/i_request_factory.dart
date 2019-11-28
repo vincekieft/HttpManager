@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:http_manager/http_manager.dart';
+import 'package:http_manager/src/dto/i_request.dart';
 
 abstract class IRequestFactory {
-  Future<Request> create(Uri uri, String method, String body, Map<String, String> headers, Completer completer);
+  Future<IRequest> create(Uri uri, String method, String body, Map<String, String> headers, Completer completer);
 }
