@@ -17,3 +17,7 @@
 ## 0.0.6
 
 - Added http adapter filter option
+
+## 0.0.7
+
+- Added custom request factory support

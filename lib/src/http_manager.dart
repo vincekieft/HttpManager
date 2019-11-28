@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:http_manager/src/factories/default_factory.dart';
+import 'package:http_manager/src/factories/i_request_factory.dart';
 import 'package:http_manager/src/interfaces/i_exception_handler.dart';
 import 'package:http_manager/src/interfaces/i_http_adapter.dart';
 import 'dto/request.dart';
+
 
 class HttpManager{
 
@@ -14,8 +17,11 @@ class HttpManager{
   // Variables
   final IHttpAdapter _adapter;
   final List<IExceptionHandler> _handlers;
+  final IRequestFactory _factory;
 
-  HttpManager(this._adapter, this._handlers);
+  HttpManager(this._adapter, this._handlers, {
+    IRequestFactory factory = const DefaultFactory()
+  }) : _factory = factory;
 
   // Public methods
   Future<R> get<R>(Uri uri, {Map<String, String> headers}) {
@@ -34,17 +40,10 @@ class HttpManager{
     return request<R>(uri, DELETE, null, headers);
   }
 
-  Future<R> request<R>(Uri uri, String method, String body, Map<String, String> headers){
+  Future<R> request<R>(Uri uri, String method, String body, Map<String, String> headers) async {
     Completer<R> completer = Completer<R>();
-
-    send(Request(
-        uri: uri,
-        method: method,
-        headers: headers,
-        body: body,
-        completer: completer
-    ));
-
+    Request request = await _factory.create(uri, method, body, headers, completer);
+    send(request);
     return completer.future;
   }
 
@@ -54,7 +53,6 @@ class HttpManager{
       _resolveRequest(request, response);
     } catch(e){ await _handleException(e, request); }
   }
-
 
   // Private methods
 
